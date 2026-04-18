@@ -232,22 +232,6 @@ body {
   text-transform: uppercase;
 }
 
-/* ─── Board Legend ─────────────────────────────────────────── */
-.board-legend {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  flex-wrap: wrap; padding: 8px 16px 0;
-  position: relative; z-index: 1;
-}
-.legend-item {
-  display: flex; align-items: center; gap: 5px;
-  font-size: .7rem; font-weight: 700; padding: 5px 12px;
-  border-radius: 50px; letter-spacing: 0.3px;
-}
-.legend-q  { background: rgba(180,120,0,0.28);  color: #FBBF24; border: 1.5px solid rgba(251,191,36,0.4); }
-.legend-d  { background: rgba(37,99,235,0.22); color: #60A5FA; border: 1.5px solid rgba(96,165,250,0.4); }
-.legend-up { background: rgba(22,163,74,0.22); color: #4ADE80; border: 1.5px solid rgba(74,222,128,0.4); }
-.legend-dn { background: rgba(220,38,38,0.22); color: #F87171; border: 1.5px solid rgba(248,113,113,0.4); }
-
 /* ─── Players Row ──────────────────────────────────────────── */
 .players-row {
   position: relative; z-index: 1;
@@ -280,6 +264,7 @@ body {
 .player-pos-label { font-size: .7rem; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
 .turn-crown { position: absolute; top: -13px; right: 10px; filter: drop-shadow(0 2px 10px rgba(255,200,50,0.8)); }
 .locked-badge {
+  display: flex; align-items: center; gap: 4px;
   font-size: .58rem;
   background: rgba(107,61,184,0.18);
   color: var(--lavender);
@@ -335,7 +320,6 @@ body {
 }
 .up-label   { color: #4ADE80; text-shadow: 0 0 8px rgba(74,222,128,0.7); }
 .down-label { color: #F87171; text-shadow: 0 0 8px rgba(248,113,113,0.7); }
-.tile-type-label { font-size: .55rem; font-weight: 700; opacity: 0.5; }
 
 /* ─── Tile types ─────────────────────────────────────────────── */
 .tile-question {
@@ -371,7 +355,6 @@ body {
 }
 .tile-end .tile-num { color: rgba(255,255,255,0.85); }
 
-/* Highlighted tile */
 .tile-highlight { animation: tilePop 0.9s ease; }
 @keyframes tilePop {
   0%   { transform: scale(1); }
@@ -427,11 +410,16 @@ body {
   text-shadow: 0 0 28px rgba(255,77,122,0.6);
 }
 .roll-btn { width: 100%; padding: 15px 28px; }
+
+/* ─── Turn Status ───────────────────────────────────────────── */
 .turn-status {
+  display: flex; align-items: center; gap: 6px;
   font-size: .78rem; color: var(--text-soft); text-align: center;
   min-height: 1.3em; font-weight: 500; line-height: 1.5;
+  justify-content: center;
 }
 .turn-status strong { color: var(--pink-light); }
+.status-icon { display: flex; align-items: center; flex-shrink: 0; }
 
 /* ─── Game Flow Guide ───────────────────────────────────────── */
 .flow-guide {
@@ -476,12 +464,15 @@ body {
   display: flex; flex-direction: column; gap: 3px;
 }
 .log-entry {
+  display: flex; align-items: flex-start; gap: 7px;
   font-size: .73rem; color: var(--text-soft); padding: 4px 0;
   border-bottom: 1px solid rgba(180,60,110,0.1);
   animation: fadeIn .3s ease; line-height: 1.4;
 }
 .log-entry:first-child { color: var(--text); font-weight: 700; }
 .log-entry:last-child { border-bottom: none; }
+.log-icon { display: flex; align-items: center; flex-shrink: 0; margin-top: 1px; }
+.log-text { flex: 1; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ─── Chat ────────────────────────────────────────────────────── */
@@ -541,7 +532,7 @@ body {
 .modal-card {
   background: rgba(18,4,14,0.99);
   border-radius: 26px;
-  padding: 44px 36px; max-width: 400px; width: 100%;
+  padding: 44px 36px; max-width: 420px; width: 100%;
   text-align: center;
   box-shadow: 0 40px 100px rgba(0,0,0,.85);
   animation: modalPop .38s cubic-bezier(.34,1.56,.64,1);
@@ -562,22 +553,67 @@ body {
   background: rgba(0,5,18,0.99);
 }
 .modal-card.modal-dare::before { background: linear-gradient(90deg, #60a5fa, #3b82f6, #1d4ed8); }
+
+/* Decorative corner accents */
+.modal-corner-tl {
+  position: absolute; top: 12px; left: 12px;
+  color: var(--pink-light); pointer-events: none;
+}
+.modal-corner-br {
+  position: absolute; bottom: 12px; right: 12px;
+  color: var(--lavender); pointer-events: none;
+}
+.modal-card.modal-question .modal-corner-tl,
+.modal-card.modal-question .modal-corner-br { color: #FBBF24; }
+.modal-card.modal-dare .modal-corner-tl,
+.modal-card.modal-dare .modal-corner-br { color: #60A5FA; }
+
 @keyframes modalPop {
   from { transform: scale(.72) translateY(24px); opacity: 0; }
   to   { transform: scale(1) translateY(0); opacity: 1; }
 }
-.modal-icon { width: 76px; height: 76px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
-.modal-icon svg { width: 100%; height: 100%; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6)); }
-.modal-type {
-  font-size: .67rem; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 3px; color: var(--text-muted); margin-bottom: 20px;
+.modal-icon {
+  width: 80px; height: 80px; margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
 }
+.modal-icon svg { width: 100%; height: 100%; }
+
+/* Who label — shows whose turn it is */
+.modal-who {
+  font-size: .65rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 2.5px; color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.modal-type {
+  font-size: .7rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 3px; margin-bottom: 20px;
+}
+.modal-card.modal-question .modal-type { color: #FBBF24; }
+.modal-card.modal-dare .modal-type { color: #60A5FA; }
+.modal-card:not(.modal-question):not(.modal-dare) .modal-type { color: var(--text-muted); }
+
 .modal-text {
   font-size: 1.18rem; line-height: 1.75; color: var(--text);
-  margin-bottom: 30px; font-family: var(--font-head); font-style: italic;
+  margin-bottom: 28px; font-family: var(--font-head); font-style: italic;
   padding: 0 4px;
 }
 .modal-done { width: 100%; }
+
+/* Waiting state — shown to the player who landed on the tile */
+.modal-wait {
+  margin-top: 14px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: rgba(107,61,184,0.12);
+  border: 1.5px solid rgba(107,61,184,0.28);
+}
+.modal-wait-inner {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: .82rem; color: var(--lavender); font-weight: 600;
+  font-style: italic; line-height: 1.4;
+}
+.modal-wait-inner svg { flex-shrink: 0; }
 
 /* ─── Win Screen ─────────────────────────────────────────────── */
 .win-overlay {
@@ -630,8 +666,6 @@ body {
   .avatar-grid { grid-template-columns: repeat(4, 1fr); }
   .game-layout { padding: 0 8px 24px; }
   .controls-wrap { max-width: 100%; }
-  .board-legend { gap: 6px; }
-  .legend-item { font-size: .65rem; padding: 3px 8px; }
 }
 @media (max-width: 480px) {
   :root { --tile-size: 29px; }
