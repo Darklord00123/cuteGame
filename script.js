@@ -31,19 +31,37 @@ function makeTokenSVG(playerIndex) {
   return `<svg viewBox="0 0 24 28" fill="none"><ellipse cx="12" cy="26" rx="6" ry="2" fill="${c.shadow}" fill-opacity="0.4"/><path d="M12 2C8.68 2 6 4.68 6 8C6 12 12 20 12 20C12 20 18 12 18 8C18 4.68 15.32 2 12 2Z" fill="${c.body}"/><circle cx="12" cy="8" r="3" fill="white" fill-opacity="0.35"/><circle cx="10.5" cy="6.5" r="1" fill="white" fill-opacity="0.5"/></svg>`;
 }
 
-// ─── Board: ONLY 4 tile types — question, dare, up, down ──────
+// ─── SVG Icons (replacing all emoji) ─────────────────────────
+const ICONS = {
+  dice: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="8" r="1.5" fill="currentColor"/><circle cx="8" cy="16" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>`,
+  trophy: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 21h8M12 17v4M5 3H3v4a4 4 0 004 4h0M19 3h2v4a4 4 0 01-4 4h0M7 3h10v7a5 5 0 01-10 0V3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  rocket: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  heart: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" fill="#FF4D6D" stroke="#FF4D6D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  heartFill: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" fill="#FF4D6D" stroke="#FF4D6D" stroke-width="1"/></svg>`,
+  arrowUp: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  arrowDown: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M19 12l-7 7-7-7" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  warning: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  clock: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#A084CA" stroke-width="2"/><polyline points="12 6 12 12 16 14" stroke="#A084CA" stroke-width="2" stroke-linecap="round"/></svg>`,
+  check: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  hourglass: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 22h14M5 2h14M17 22v-4.172a2 2 0 00-.586-1.414L12 12M7 22v-4.172a2 2 0 01.586-1.414L12 12m0 0L7 6.172A2 2 0 016.586 4.758V2h10.828a2 2 0 01.586 1.414v.344M12 12l4.414-5.828" stroke="#C49AB8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  sparkle: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" fill="#FFD166" stroke="#F4A820" stroke-width="1.2" stroke-linejoin="round"/></svg>`,
+  lock: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  star: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#FFD166" stroke="#F4A820" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+  refresh: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 109-9M3 12l3-3m-3 3l3 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  question: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#d97706" stroke-width="2"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#d97706" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  dare: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#0284c7" fill-opacity="0.3" stroke="#0284c7" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+};
+
+// ─── Board ────────────────────────────────────────────────────
 const TOTAL_TILES = 101;
 const FINISH_TILE = 100;
 
-// Up: max 5 tiles | Down: max 7 tiles | Avoid rows 1 (1-10) and 10 (91-100)
 const TILE_DEFS = (() => {
   const defs = {};
   defs[0]   = { type: "start", label: "Start" };
   defs[100] = { type: "end",   label: "Goal" };
 
-  // Max 5 ups, spread across middle tiles only (11-90)
   const upMap   = { 18:6, 29:5, 43:8, 57:6, 72:7 };
-  // Max 7 downs, spread across middle tiles only (11-90)
   const downMap = { 14:-8, 26:-7, 38:-9, 52:-8, 64:-7, 76:-9, 88:-8 };
 
   for (let i = 1; i <= 99; i++) {
@@ -75,7 +93,7 @@ const QUESTIONS = [
   "What is your favorite kind of conversation with your game partner?",
   "What is one place you would want to go with your game partner?",
   "What kind of silence with your game partner feels comfortable?",
-  "What is one thing about your game partner’s personality that stands out?",
+  "What is one thing about your game partner's personality that stands out?",
   "What is something you and your game partner could talk about for hours?",
   "What is one small habit of your game partner that you like?",
   "What kind of late-night talk with your game partner feels best?",
@@ -90,7 +108,7 @@ const QUESTIONS = [
   "What is one thing your game partner does that makes you curious about them?",
   "What is one thing you and your game partner would enjoy doing quietly?",
   "What is one thing your game partner does that makes time feel fast?",
-  "What is one thing you notice about your game partner’s energy?",
+  "What is one thing you notice about your game partner's energy?",
   "What is one thing you want to experience with your game partner for the first time?",
   "What is one thing your game partner does that feels different in a good way?",
   "What is one thing about your game partner you would describe as rare?",
@@ -98,7 +116,7 @@ const QUESTIONS = [
   "What is one kind of plan you would enjoy with your game partner?",
   "What is one thing about your game partner that makes you comfortable?",
   "What is one thing your game partner does that feels genuine?",
-  "What is one thing you want to ask your game partner but haven’t yet?",
+  "What is one thing you want to ask your game partner but haven't yet?",
   "What is one thing your game partner does that makes conversations fun?",
   "What is one thing about your game partner you notice without trying?"
 ];
@@ -107,7 +125,7 @@ const DARES = [
   "Write a 2-line message about something you notice about your game partner.",
   "Send your game partner a voice note describing their vibe.",
   "List 4 small things about your game partner that you appreciate.",
-  "Write your game partner’s name using a word you associate with them for each letter.",
+  "Write your game partner's name using a word you associate with them for each letter.",
   "Send your game partner a random compliment that is not about looks.",
   "Describe your game partner using only 4 words.",
   "Write a short message about a moment you remember with your game partner.",
@@ -118,33 +136,34 @@ const DARES = [
   "List 3 things your game partner does that you notice often.",
   "Write a short poetic line about your game partner.",
   "Send your game partner a playful but kind message.",
-  "Describe your game partner’s energy like a weather report.",
+  "Describe your game partner's energy like a weather report.",
   "Write a message your game partner can read before sleeping.",
   "Tell your game partner one thing about them that feels different from others.",
-  "Send your game partner a message starting with “random thought about you”.",
-  "Write a short note about your game partner’s personality.",
+  "Send your game partner a message starting with \"random thought about you\".",
+  "Write a short note about your game partner's personality.",
   "Describe your game partner like a character in a story.",
   "Send your game partner a message that feels calm and comforting.",
   "Write one thing your game partner does that feels thoughtful.",
   "Send your game partner a soft voice note.",
   "Describe your game partner using a color and explain why.",
-  "Write a short message about your game partner’s presence.",
+  "Write a short message about your game partner's presence.",
   "Tell your game partner one thing about them that you admire quietly.",
   "Send your game partner a message that feels warm.",
   "Describe your game partner like a place.",
   "Write one thing your game partner does that feels genuine.",
   "Send your game partner a message that feels effortless.",
   "Tell your game partner one thing about them that you notice without trying.",
-  "Write a short message about your game partner’s vibe.",
+  "Write a short message about your game partner's vibe.",
   "Send your game partner a kind message with no reason.",
   "Describe your game partner like a song.",
   "Write one thing your game partner does that feels natural.",
   "Send your game partner a simple but meaningful message.",
   "Tell your game partner one thing about them that makes conversations easy.",
-  "Write a short note about your game partner’s energy.",
+  "Write a short note about your game partner's energy.",
   "Send your game partner a light and kind message.",
   "Describe your game partner like a quiet moment."
 ];
+
 // ─── State ─────────────────────────────────────────────────────
 let state = {
   roomCode: null, myIndex: null, playerName: null, playerAvatar: null,
@@ -160,9 +179,14 @@ function spawnPetals(container = document.getElementById("petalsBg")) {
     const p = document.createElement("div");
     p.className = "petal";
     const type = Math.floor(Math.random() * 3);
-    if (type === 0) p.innerHTML = `<svg width="${10+Math.random()*14}" height="${10+Math.random()*14}" viewBox="0 0 40 36" fill="none"><path d="M20 34C20 34 3 22 3 11C3 6 7 3 12 3C15.5 3 18.5 5 20 7.5C21.5 5 24.5 3 28 3C33 3 37 6 37 11C37 22 20 34 20 34Z" fill="${Math.random()>.5?'#FF8FA3':'#CDB4DB'}" opacity="0.6"/></svg>`;
-    else if (type === 1) p.innerHTML = `<svg width="${8+Math.random()*10}" height="${8+Math.random()*10}" viewBox="0 0 24 24" fill="none"><path d="M12 2L14 8.5H21L15.5 12.5L17.5 19L12 15L6.5 19L8.5 12.5L3 8.5H10Z" fill="#FFD166" opacity="0.5"/></svg>`;
-    else { const s=5+Math.random()*8; p.innerHTML=`<svg width="${s}" height="${s}" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="${Math.random()>.5?'#FF8FA3':'#CDB4DB'}" opacity="0.4"/></svg>`; }
+    if (type === 0) {
+      p.innerHTML = `<svg width="${10+Math.random()*14}" height="${10+Math.random()*14}" viewBox="0 0 40 36" fill="none"><path d="M20 34C20 34 3 22 3 11C3 6 7 3 12 3C15.5 3 18.5 5 20 7.5C21.5 5 24.5 3 28 3C33 3 37 6 37 11C37 22 20 34 20 34Z" fill="${Math.random()>.5?'#FF8FA3':'#CDB4DB'}" opacity="0.6"/></svg>`;
+    } else if (type === 1) {
+      p.innerHTML = `<svg width="${8+Math.random()*10}" height="${8+Math.random()*10}" viewBox="0 0 24 24" fill="none"><path d="M12 2L14 8.5H21L15.5 12.5L17.5 19L12 15L6.5 19L8.5 12.5L3 8.5H10Z" fill="#FFD166" opacity="0.5"/></svg>`;
+    } else {
+      const s = 5+Math.random()*8;
+      p.innerHTML = `<svg width="${s}" height="${s}" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="${Math.random()>.5?'#FF8FA3':'#CDB4DB'}" opacity="0.4"/></svg>`;
+    }
     p.style.left = Math.random()*100+"vw";
     p.style.animationDuration = (10+Math.random()*12)+"s";
     p.style.animationDelay = (Math.random()*14)+"s";
@@ -319,9 +343,18 @@ function buildBoard() {
           </svg>
         </div>`;
       } else if (def.type === "start") {
-        inner += `<div class="tile-center-icon">🚀</div>`;
+        inner += `<div class="tile-center-icon">
+          <svg viewBox="0 0 18 18" fill="none" width="16" height="16">
+            <path d="M9 2C6.24 2 4 4.24 4 7C4 10.5 9 16 9 16C9 16 14 10.5 14 7C14 4.24 11.76 2 9 2Z" fill="#818CF8"/>
+            <circle cx="9" cy="7" r="2" fill="white" fill-opacity="0.6"/>
+          </svg>
+        </div>`;
       } else if (def.type === "end") {
-        inner += `<div class="tile-center-icon">❤️</div>`;
+        inner += `<div class="tile-center-icon">
+          <svg viewBox="0 0 18 18" fill="none" width="16" height="16">
+            <path d="M9 2L10.8 6.5H15.5L11.6 9.3L13.1 14L9 11.3L4.9 14L6.4 9.3L2.5 6.5H7.2Z" fill="white" fill-opacity="0.9"/>
+          </svg>
+        </div>`;
       }
 
       inner += `<div class="tile-tokens" id="tokens-${tileNum}"></div>`;
@@ -336,7 +369,7 @@ let prevPositions = [-1, -1];
 
 function renderGame(data) {
   if (!data) return;
-  const { players, turn, gameState, diceValue, chat } = data;
+  const { players, turn, gameState, diceValue, chat, activeModal } = data;
 
   players.forEach((p, i) => {
     document.getElementById(`av${i}`).innerHTML = getAvatarSVG(p.avatar || "rose");
@@ -364,27 +397,40 @@ function renderGame(data) {
   const statusEl = document.getElementById("turnStatus");
 
   if (gameState === "waiting") {
-    statusEl.textContent = "Waiting for your partner to join…"; rollBtn.disabled = true;
+    statusEl.innerHTML = `<span class="status-icon">${ICONS.clock}</span> Waiting for your partner to join…`;
+    rollBtn.disabled = true;
   } else if (gameState === "finished") {
-    statusEl.textContent = "Game over! 🎉"; rollBtn.disabled = true;
+    statusEl.innerHTML = `<span class="status-icon">${ICONS.trophy}</span> Game over!`;
+    rollBtn.disabled = true;
   } else {
     const me = players[state.myIndex];
     if (myTurn) {
-      if (!me?.started) statusEl.textContent = "🎲 Roll a 6 to enter the trail!";
-      else {
+      if (!me?.started) {
+        statusEl.innerHTML = `<span class="status-icon">${ICONS.dice}</span> Roll a 6 to enter the trail!`;
+      } else {
         const needed = FINISH_TILE - (me.position || 0);
-        if (needed <= 6) statusEl.innerHTML = `⚠️ Need <strong>${needed}</strong> or less to advance!`;
-        else statusEl.textContent = "🎲 Your turn — roll the dice!";
+        if (needed <= 6) {
+          statusEl.innerHTML = `<span class="status-icon">${ICONS.warning}</span> Need <strong>${needed}</strong> or less to advance!`;
+        } else {
+          statusEl.innerHTML = `<span class="status-icon">${ICONS.dice}</span> Your turn — roll the dice!`;
+        }
       }
       rollBtn.disabled = state.rolling;
     } else {
       const other = players[1 - state.myIndex];
-      statusEl.textContent = `⏳ ${other?.name || "Partner"}'s turn…`;
+      statusEl.innerHTML = `<span class="status-icon">${ICONS.hourglass}</span> ${other?.name || "Partner"}'s turn…`;
       rollBtn.disabled = true;
     }
   }
 
   renderChat(chat || []);
+
+  // ── Sync modal from Firebase ──────────────────────────────
+  if (activeModal && activeModal.content) {
+    showModal(activeModal, state.myIndex);
+  } else {
+    document.getElementById("modalOverlay").classList.add("hidden");
+  }
 
   if (gameState === "finished" && data.winner !== undefined) {
     const winner = players[data.winner];
@@ -418,7 +464,6 @@ async function animateTokenMove(playerIndex, fromPos, toPos) {
       placeToken(playerIndex, cur, true);
     }
   } else {
-    // Big jump: flash midpoints
     const mid1 = fromPos + Math.floor(steps * 0.33) * dir;
     const mid2 = fromPos + Math.floor(steps * 0.66) * dir;
     await sleep(80); placeToken(playerIndex, mid1, false);
@@ -433,7 +478,7 @@ async function animateTokenMove(playerIndex, fromPos, toPos) {
   }
 }
 
-// ─── Roll dice — FIXED: 6 allows re-roll, no lock ────────────
+// ─── Roll dice ────────────────────────────────────────────────
 async function onRollClick() {
   if (state.rolling) return;
   const data = state.roomData;
@@ -449,7 +494,6 @@ async function onRollClick() {
   const players = JSON.parse(JSON.stringify(data.players));
   const me = players[state.myIndex];
 
-  // Animate dice with cycling faces
   const diceEl = document.getElementById("diceFace");
   diceEl.classList.add("rolling");
   const animInt = setInterval(() => renderDiceSVG(Math.ceil(Math.random()*6)), 75);
@@ -468,8 +512,8 @@ async function onRollClick() {
   if (!me.started) {
     if (roll === 6) {
       me.started = true; me.position = 0;
-      actionMsg = `🎉 ${me.name} rolled a 6 and entered the trail! Roll again!`;
-      nextTurn = state.myIndex; // EXTRA TURN — stays my turn
+      actionMsg = `${me.name} rolled a 6 and entered the trail! Roll again!`;
+      nextTurn = state.myIndex;
     } else {
       actionMsg = `${me.name} rolled ${roll} — need a 6 to begin!`;
       nextTurn = 1 - state.myIndex;
@@ -483,16 +527,15 @@ async function onRollClick() {
     } else {
       let newPos = Math.min(me.position + roll, FINISH_TILE);
       const def = TILE_DEFS[newPos];
-      actionMsg = `${me.name} rolled ${roll} → tile ${newPos}`;
+      actionMsg = `${me.name} rolled ${roll} — tile ${newPos}`;
 
       if (def?.type === "up") {
         const landPos = Math.min(newPos + def.jump, FINISH_TILE);
-        actionMsg += ` ⬆️ ${def.label} → moves to tile ${landPos}!`;
+        actionMsg += ` — jumps ahead to tile ${landPos}!`;
         me.position = newPos;
         players[state.myIndex] = me;
-        // Write intermediate position first, then final
         await updateRoom(state.roomCode, { players, turn: 1-state.myIndex, diceValue: roll, gameState, lastAction: actionMsg });
-        addLog(actionMsg);
+        addLog(actionMsg, "up");
         await sleep(650);
         me.position = landPos;
         players[state.myIndex] = me;
@@ -503,11 +546,11 @@ async function onRollClick() {
 
       } else if (def?.type === "down") {
         const landPos = Math.max(newPos + def.jump, 0);
-        actionMsg += ` ⬇️ ${def.label} → slides to tile ${landPos}!`;
+        actionMsg += ` — slides back to tile ${landPos}!`;
         me.position = newPos;
         players[state.myIndex] = me;
         await updateRoom(state.roomCode, { players, turn: 1-state.myIndex, diceValue: roll, gameState, lastAction: actionMsg });
-        addLog(actionMsg);
+        addLog(actionMsg, "down");
         await sleep(650);
         me.position = landPos;
         players[state.myIndex] = me;
@@ -523,15 +566,14 @@ async function onRollClick() {
 
       me.position = newPos;
 
-      // 6 = extra turn (keep turn on me)
       if (roll === 6) {
         nextTurn = state.myIndex;
-        actionMsg += ` 🎲 Rolled 6 — roll again!`;
+        actionMsg += ` — rolled 6, roll again!`;
       }
 
       if (newPos >= FINISH_TILE) {
         gameState = "finished"; winner = state.myIndex;
-        actionMsg += ` 🏆 WINNER! Love conquers all!`;
+        actionMsg += ` — Winner!`;
       }
     }
   }
@@ -539,43 +581,128 @@ async function onRollClick() {
   players[state.myIndex] = me;
   const update = { players, turn: nextTurn, diceValue: roll, gameState, lastAction: actionMsg };
   if (winner !== undefined) update.winner = winner;
-  await updateRoom(state.roomCode, update);
-  addLog(actionMsg);
 
-  if (tileAction) setTimeout(() => showModal(tileAction), 500);
+  // ── Write modal to Firebase so both players see it ────────
+  // Per-player dedup: each player has their own seen Q/D index lists
+  if (tileAction) {
+    const pool = tileAction.type === "question" ? QUESTIONS : DARES;
+    const seenKey = tileAction.type === "question" ? "seenQ" : "seenD";
+
+    // Seen indices for the landing player (stored on their player object)
+    const seenIndices = new Set(me[seenKey] || []);
+
+    // Build list of unseen indices; if all seen, reset (full cycle)
+    let available = pool.map((_, i) => i).filter(i => !seenIndices.has(i));
+    if (available.length === 0) {
+      // All used — reset this player's history for this type
+      available = pool.map((_, i) => i);
+      me[seenKey] = [];
+    }
+
+    // Pick a random unseen index
+    const chosenIndex = available[Math.floor(Math.random() * available.length)];
+
+    // Record it as seen for this player
+    me[seenKey] = [...(me[seenKey] || []), chosenIndex];
+    players[state.myIndex] = me;
+    update.players = players; // ensure updated seen list is persisted
+
+    update.activeModal = {
+      type: tileAction.type,
+      content: pool[chosenIndex],
+      forPlayer: state.myIndex,
+    };
+  }
+
+  await updateRoom(state.roomCode, update);
+  addLog(actionMsg, tileAction?.type || null);
 
   state.rolling = false;
 
-  // KEY FIX: if it's still my turn (rolled 6), re-enable the button right away
   if (nextTurn === state.myIndex && gameState === "playing") {
     document.getElementById("rollBtn").disabled = false;
   }
 }
 
-// ─── Modal ───────────────────────────────────────────────────
-function showModal({ type }) {
-  let icon = "", label = "", content = "", cls = "";
+// ─── Modal — shown on both screens, dismissed by opponent ─────
+function showModal({ type, content, forPlayer }, myIndex) {
+  const iAmTheOpponent = (forPlayer !== myIndex);
+
+  let icon = "", label = "", cls = "";
 
   if (type === "question") {
-    icon = `<svg viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="28" fill="#fef9c3" stroke="#f59e0b" stroke-width="2.5"/><path d="M22 22C22 17.58 25.58 14 30 14C34.42 14 38 17.58 38 22C38 27 30 28.5 30 33" stroke="#d97706" stroke-width="3.5" stroke-linecap="round"/><circle cx="30" cy="42" r="3" fill="#d97706"/></svg>`;
-    label = "💛 Romantic Question";
-    content = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+    icon = `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="38" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+      <circle cx="40" cy="40" r="28" fill="#FDE68A" opacity="0.5"/>
+      <path d="M28 30C28 23.37 33.37 18 40 18C46.63 18 52 23.37 52 30C52 37 40 39 40 46" stroke="#D97706" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="40" cy="56" r="4" fill="#D97706"/>
+      <path d="M20 15 L24 19M60 15 L56 19M40 8 L40 13" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+    </svg>`;
+    label = "Romantic Question";
     cls = "modal-question";
   } else {
-    icon = `<svg viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="28" fill="#e0f2fe" stroke="#61c7fa" stroke-width="2.5"/><path d="M30 12L34.5 24.5H48L37.5 32L41.5 44.5L30 37L18.5 44.5L22.5 32L12 24.5H25.5Z" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7" stroke-width="1.5"/></svg>`;
-    label = "💙 Dare";
-    content = DARES[Math.floor(Math.random() * DARES.length)];
+    icon = `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="38" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+      <circle cx="40" cy="40" r="28" fill="#DBEAFE" opacity="0.6"/>
+      <path d="M40 14L46.18 30.72H64L50.09 40.56L55.78 57.28L40 47.6L24.22 57.28L29.91 40.56L16 30.72H33.82Z" fill="#2563EB" fill-opacity="0.25" stroke="#2563EB" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M15 20 L19 24M65 20 L61 24M40 8 L40 12" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+    </svg>`;
+    label = "Dare";
     cls = "modal-dare";
   }
+
+  // Player name labels
+  const players = state.roomData?.players || [];
+  const landingPlayer = players[forPlayer];
+  const opponentPlayer = players[1 - forPlayer];
 
   document.querySelector(".modal-card").className = `modal-card ${cls}`;
   document.getElementById("modalIcon").innerHTML = icon;
   document.getElementById("modalType").textContent = label;
   document.getElementById("modalText").textContent = content;
+
+  // Who label
+  const whoEl = document.getElementById("modalWho");
+  if (whoEl) {
+    whoEl.textContent = landingPlayer ? `${landingPlayer.name}'s turn` : "";
+  }
+
+  const doneBtn = document.getElementById("modalDone");
+  const waitMsg = document.getElementById("modalWait");
+
+  if (iAmTheOpponent) {
+    // Opponent sees the Done button and controls dismissal
+    doneBtn.classList.remove("hidden");
+    if (waitMsg) waitMsg.classList.add("hidden");
+    doneBtn.innerHTML = `
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Done — continue!
+    `;
+  } else {
+    // The one who landed waits
+    doneBtn.classList.add("hidden");
+    if (waitMsg) {
+      waitMsg.classList.remove("hidden");
+      waitMsg.innerHTML = `
+        <span class="modal-wait-inner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M5 22h14M5 2h14M17 22v-4.172a2 2 0 00-.586-1.414L12 12M7 22v-4.172a2 2 0 01.586-1.414L12 12m0 0L7.586 6.586A2 2 0 017 5.172V2h10v3.172a2 2 0 01-.586 1.414L12 12z" stroke="#A084CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          ${opponentPlayer ? opponentPlayer.name : "Your partner"} will confirm when done
+        </span>
+      `;
+    }
+  }
+
   document.getElementById("modalOverlay").classList.remove("hidden");
 }
 
-function onModalDone() { document.getElementById("modalOverlay").classList.add("hidden"); }
+// Opponent clicking Done clears modal in Firebase — closes on both screens
+function onModalDone() {
+  updateRoom(state.roomCode, { activeModal: null });
+}
 
 function showWin(winner) {
   const overlay = document.getElementById("winOverlay");
@@ -610,11 +737,22 @@ function startConfetti() {
   draw();
 }
 
-function addLog(msg) {
+// Log icons per event type
+const LOG_ICONS = {
+  up:       `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  down:     `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M19 12l-7 7-7-7" stroke="#F87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  question: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#FBBF24" stroke-width="2"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  dare:     `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#60A5FA" fill-opacity="0.4" stroke="#60A5FA" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+  default:  `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="#A084CA" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="#A084CA"/><circle cx="15.5" cy="8.5" r="1.5" fill="#A084CA"/><circle cx="8.5" cy="15.5" r="1.5" fill="#A084CA"/><circle cx="15.5" cy="15.5" r="1.5" fill="#A084CA"/></svg>`,
+};
+
+function addLog(msg, type = null) {
   const entries = document.getElementById("logEntries");
   if (!entries) return;
   const entry = document.createElement("div");
-  entry.className = "log-entry"; entry.textContent = msg;
+  entry.className = "log-entry";
+  const icon = LOG_ICONS[type] || LOG_ICONS.default;
+  entry.innerHTML = `<span class="log-icon">${icon}</span><span class="log-text">${msg}</span>`;
   entries.prepend(entry);
   while (entries.children.length > 25) entries.removeChild(entries.lastChild);
 }
